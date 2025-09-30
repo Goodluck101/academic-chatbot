@@ -1,0 +1,5 @@
+{
+    "API_GATEWAY_URL": "your_actual_api_gateway_url_here",
+    "PROJECT_NAME": "Academic Chatbot",
+    "ENVIRONMENT": "development"
+}
