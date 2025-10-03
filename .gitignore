@@ -1,2 +1,47 @@
 # Environment variables
-#.env
+.env
+*.env
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+terraform.tfstate
+terraform.tfvars
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.env.*
+.venv
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Lambda deployment packages
+*.zip
+deployments/
+
+# Auto-generated files
+deployment-summary.txt
+frontend/config.json
+frontend/.env
+backend/lambda_function.zip

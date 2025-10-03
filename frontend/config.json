@@ -1,5 +1,6 @@
 {
-    "API_GATEWAY_URL": "your_actual_api_gateway_url_here",
-    "PROJECT_NAME": "Academic Chatbot",
-    "ENVIRONMENT": "development"
+    "API_GATEWAY_URL": "https://27pwk19u97.execute-api.us-east-1.amazonaws.com/dev/chat",
+    "PROJECT_NAME": "academic-chatbot",
+    "ENVIRONMENT": "dev",
+    "AWS_REGION": "us-east-1"
 }

@@ -1,0 +1,19 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:DeleteLogGroup",
+        "logs:DescribeLogGroups",
+        "logs:ListTagsForResource",
+        "logs:TagResource",
+        "logs:UntagResource",
+        "logs:PutRetentionPolicy",
+        "logs:DeleteRetentionPolicy"
+      ],
+      "Resource": "arn:aws:logs:*:*:*"
+    }
+  ]
+}

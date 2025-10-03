@@ -1,11 +1,11 @@
 output "api_gateway_url" {
   description = "The base URL of the API Gateway"
-  value       = "${aws_apigatewayv2_api.chatbot_api.api_endpoint}${var.environment}"
+  value       = "${aws_apigatewayv2_api.chatbot_api.api_endpoint}/${var.environment}"
 }
 
 output "api_gateway_chat_endpoint" {
   description = "The full chat endpoint URL"
-  value       = "${aws_apigatewayv2_api.chatbot_api.api_endpoint}${var.environment}/chat"
+  value       = "${aws_apigatewayv2_api.chatbot_api.api_endpoint}/${var.environment}/chat"
 }
 
 output "lambda_function_name" {
@@ -46,7 +46,7 @@ output "bedrock_model_id" {
 output "frontend_config" {
   description = "Configuration for the frontend application"
   value = {
-    api_gateway_url = "${aws_apigatewayv2_api.chatbot_api.api_endpoint}${var.environment}/chat"
+    api_gateway_url = "${aws_apigatewayv2_api.chatbot_api.api_endpoint}/${var.environment}/chat"
     project_name    = var.project_name
     environment     = var.environment
     aws_region      = var.aws_region
@@ -65,7 +65,7 @@ Next Steps:
    - Or update the apiUrl in frontend/script.js
 
 2. Test the API endpoint:
-   curl -X POST ${aws_apigatewayv2_api.chatbot_api.api_endpoint}${var.environment}/chat \
+   curl -X POST ${aws_apigatewayv2_api.chatbot_api.api_endpoint}/${var.environment}/chat \
      -H "Content-Type: application/json" \
      -d '{"message": "What is photosynthesis?"}'
 

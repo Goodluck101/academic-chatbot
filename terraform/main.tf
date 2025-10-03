@@ -61,6 +61,9 @@ resource "aws_iam_role" "lambda_role" {
   }
 }
 
+# Get AWS account ID of the caller
+data "aws_caller_identity" "current" {}
+
 # IAM Policy for Lambda
 resource "aws_iam_role_policy" "lambda_policy" {
   name = "${local.env_vars.project_name}-${local.env_vars.environment}-lambda-policy"
@@ -76,7 +79,10 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:*:*:*"
+        Resource = [
+          "arn:aws:logs:${local.env_vars.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${local.env_vars.project_name}-${local.env_vars.environment}-function",
+          "arn:aws:logs:${local.env_vars.aws_region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/${local.env_vars.project_name}-${local.env_vars.environment}-function:*"
+        ]
       },
       {
         Effect = "Allow"
@@ -88,6 +94,40 @@ resource "aws_iam_role_policy" "lambda_policy" {
     ]
   })
 }
+
+
+
+# IAM Policy for Lambda
+# resource "aws_iam_role_policy" "lambda_policy" {
+#   name = "${local.env_vars.project_name}-${local.env_vars.environment}-lambda-policy"
+#   role = aws_iam_role.lambda_role.id
+
+#   policy = jsonencode({
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "logs:CreateLogGroup",
+#           "logs:DeleteLogGroup",
+#           "logs:DescribeLogGroups",
+#           "logs:ListTagsForResource",
+#           "logs:TagResource",
+#           "logs:UntagResource",
+#           "logs:PutLogEvents"
+#         ]
+#         Resource = "arn:aws:logs:*:*:*"
+#       },
+#       {
+#         Effect = "Allow"
+#         Action = [
+#           "bedrock:InvokeModel"
+#         ]
+#         Resource = "*"
+#       }
+#     ]
+#   })
+# }
 
 # Lambda Function
 resource "aws_lambda_function" "chatbot_lambda" {
@@ -101,7 +141,7 @@ resource "aws_lambda_function" "chatbot_lambda" {
 
   environment {
     variables = {
-      AWS_REGION        = local.env_vars.aws_region
+      # AWS_REGION        = local.env_vars.aws_region
       BEDROCK_MODEL_ID  = local.env_vars.bedrock_model_id
       MAX_TOKENS        = local.env_vars.max_tokens
       TEMPERATURE       = local.env_vars.temperature
@@ -183,41 +223,43 @@ resource "aws_lambda_permission" "api_gateway_permission" {
 # CloudWatch Log Group for Lambda
 resource "aws_cloudwatch_log_group" "lambda_log_group" {
   name              = "/aws/lambda/${aws_lambda_function.chatbot_lambda.function_name}"
-  retention_in_days = 7
+  # retention_in_days = 7
 
-  tags = {
-    Project     = local.env_vars.project_name
-    Environment = local.env_vars.environment
-  }
+  # tags = {
+  #   Project     = local.env_vars.project_name
+  #   Environment = local.env_vars.environment
+  # }
 }
 
+
+##########################
 # Outputs
-output "api_gateway_url" {
-  description = "The URL of the API Gateway"
-  value       = "${aws_apigatewayv2_api.chatbot_api.api_endpoint}${local.env_vars.environment}"
-}
+# output "api_gateway_url" {
+#   description = "The URL of the API Gateway"
+#   value       = "${aws_apigatewayv2_api.chatbot_api.api_endpoint}${local.env_vars.environment}"
+# }
 
-output "lambda_function_name" {
-  description = "The name of the Lambda function"
-  value       = aws_lambda_function.chatbot_lambda.function_name
-}
+# output "lambda_function_name" {
+#   description = "The name of the Lambda function"
+#   value       = aws_lambda_function.chatbot_lambda.function_name
+# }
 
-output "lambda_function_arn" {
-  description = "The ARN of the Lambda function"
-  value       = aws_lambda_function.chatbot_lambda.arn
-}
+# output "lambda_function_arn" {
+#   description = "The ARN of the Lambda function"
+#   value       = aws_lambda_function.chatbot_lambda.arn
+# }
 
-output "api_gateway_id" {
-  description = "The ID of the API Gateway"
-  value       = aws_apigatewayv2_api.chatbot_api.id
-}
+# output "api_gateway_id" {
+#   description = "The ID of the API Gateway"
+#   value       = aws_apigatewayv2_api.chatbot_api.id
+# }
 
-output "environment" {
-  description = "The deployment environment"
-  value       = local.env_vars.environment
-}
+# output "environment" {
+#   description = "The deployment environment"
+#   value       = local.env_vars.environment
+# }
 
-output "project_name" {
-  description = "The project name"
-  value       = local.env_vars.project_name
-}
+# output "project_name" {
+#   description = "The project name"
+#   value       = local.env_vars.project_name
+# }
